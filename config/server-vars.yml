@@ -1,0 +1,134 @@
+---
+# Sample Open edX on Azure configuration
+# see: https://github.com/edx/configuration/blob/master/playbooks/roles/edxapp/defaults/main.yml
+
+EDXAPP_PLATFORM_NAME: "%%PLATFORM_NAME%%"
+
+EDXAPP_TIME_ZONE: "America/Los_Angeles"
+
+# Superuser information
+EDXAPP_SU_PASSWORD: "%%EDXAPP_SU_PASSWORD%%" 
+EDXAPP_SU_EMAIL: "%%EDXAPP_SU_EMAIL%%"
+EDXAPP_SU_USERNAME: "%%EDXAPP_SU_USERNAME%%"
+
+# Enable Azure Active Directory OAuth2 Third Party Authentication
+EDXAPP_AAD_CLIENT_ID: "%%EDXAPP_AAD_CLIENT_ID%%"
+EDXAPP_AAD_SECURITY_KEY: "%%EDXAPP_AAD_SECURITY_KEY%%" 
+EDXAPP_AAD_BUTTON_NAME: "%%EDXAPP_AAD_BUTTON_NAME%%"
+EDXAPP_AAD_ENABLE: %%EDXAPP_ENABLE_THIRD_PARTY_AUTH%%
+
+# Import Kitchen Sink Course Configuration
+EDXAPP_IMPORT_KITCHENSINK_COURSE: %%EDXAPP_IMPORT_KITCHENSINK_COURSE%%
+
+# Configure third-party auth
+# see: http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/configuration/tpa/
+# see: https://github.com/MSOpenTech/edx-documentation/blob/master/en_us/install_operations/source/configuration/enable_sso.rst
+#EDXAPP_ENABLE_THIRD_PARY_AUTH: true
+#EDXAPP_ENABLE_OAUTH2_PROVIDER: true
+
+# By defining COURSE_VISIBILITY keys we are allowing making course visible/invisible on course advanced settings the key
+# 'Course Visibility In Catalog' 
+# Defines the access permissions for showing the course in the course catalog. This can be set to one of three values: 
+# 'both' (show in catalog and allow access to about page), 
+# 'about' (only allow access to about page), 
+# 'none' (do not show in catalog and do not allow access to an about page).
+EDXAPP_COURSE_CATALOG_VISIBILITY_PERMISSION: "see_in_catalog"
+EDXAPP_COURSE_ABOUT_VISIBILITY_PERMISSION: "see_about_page"
+
+# Password Policy Configuration
+# AT least 8 characters. Must contain at least one lowercase, one uppercase and one symbol.
+EDXAPP_PASSWORD_MIN_LENGTH: 8 
+EDXAPP_PASSWORD_MAX_LENGTH: 75
+EDXAPP_PASSWORD_COMPLEXITY: 
+  UPPER: 1
+  LOWER: 1
+  PUNCTUATION: 1
+
+EDXAPP_ENFORCE_PASSWORD_POLICY: true
+
+# Adding Disclosure Notice to the marketing url link mapping
+EDXAPP_MKTG_URL_LINK_MAP:
+  DN: "dn"
+
+# Country made required field in registration.
+EDXAPP_REGISTRATION_EXTRA_FIELDS: 
+  city: "hidden"
+  country: "required"
+  gender: "optional"
+  goals: "optional"
+  honor_code: "required"
+  level_of_education: "optional"
+  mailing_address: "hidden"
+  year_of_birth: "hidden"
+  language: "optional"
+
+
+# Enable social sharing icons for courses. For now we are just enabling linkedin. 
+# Facebook and Twitter is not enabled for now.
+EDXAPP_SOCIAL_SHARING_SETTINGS:
+  CERTIFICATE_FACEBOOK: false
+  CERTIFICATE_LINKEDIN: true
+  CERTIFICATE_TWITTER: false
+  DASHBOARD_FACEBOOK: false
+  DASHBOARD_LINKEDIN: true
+  DASHBOARD_TWITTER: false
+
+
+
+# Order of the social media links we want learners to see in the footer
+# We can also add facebook, twitter, youtube, google_plus and reddit here later if we enable them in SOCIAL_SHARING_SETTINGS above
+EDXAPP_SOCIAL_MEDIA_FOOTER_NAMES: [ "linkedin" ]
+
+
+# see: http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/feature_flags/feature_flag_index.html
+EDXAPP_FEATURES:  
+  ENABLE_THIRD_PARTY_AUTH: %%EDXAPP_ENABLE_THIRD_PARTY_AUTH%%
+  ENABLE_OAUTH2_PROVIDER: %%EDXAPP_ENABLE_OAUTH2_PROVIDER%%
+  ENABLE_SYSADMIN_DASHBOARD: true
+  ENABLE_INSTRUCTOR_EMAIL: true
+  REQUIRE_COURSE_EMAIL_AUTH: false
+  # PREVIEW_LMS_BASE must be localhost for course discovery to work with dns (openedx.slack - 9/14/16 @3:08pm)
+  PREVIEW_LMS_BASE: "%%PREVIEW_URL%%"
+  DISABLE_COURSE_CREATION: true
+  DISABLE_LIBRARY_CREATION: true
+  ALLOW_ALL_ADVANCED_COMPONENTS: true
+  ALLOW_HIDING_DISCUSSION_TAB: true
+  CERTIFICATES_ENABLED: true
+  CERTIFICATES_HTML_VIEW: true
+  ENABLE_GRADE_DOWNLOADS: true
+  ENABLE_VIDEO_UPLOAD_PIPELINE: true
+  ENABLE_MOBILE_REST_API: %%EDXAPP_ENABLE_MOBILE_REST_API%%
+  OAUTH_ENFORCE_SECURE: %%OAUTH_ENFORCE_SECURE%%
+  ENABLE_COMBINED_LOGIN_REGISTRATION: %%COMBINED_LOGIN_REGISTRATION%%
+  # ENABLE_CSMH_EXTENDED: true
+  ENABLE_LTI_PROVIDER: false
+  
+# Comprehensive Theming Configuration
+EDXAPP_COMPREHENSIVE_THEME_DIRS: %%EDXAPP_COMPREHENSIVE_THEME_DIRS%%
+EDXAPP_ENABLE_COMPREHENSIVE_THEMING: %%EDXAPP_ENABLE_COMPREHENSIVE_THEMING%%
+EDXAPP_DEFAULT_SITE_THEME: "%%EDXAPP_DEFAULT_SITE_THEME%%"
+EDXAPP_THEME_ENVIRONMENT: "%%ENVIRONMENT%%"
+COMPREHENSIVE_THEME_DIRS: "{{ EDXAPP_COMPREHENSIVE_THEME_DIRS }}"
+
+# storage uploads
+EDXAPP_GRADE_STORAGE_KWARGS:
+  container: "reports"
+EDXAPP_GRADE_STORAGE_CONTAINER: "reports"
+# overriding the default value from 5 to 50. we don't want to stop the retry's at any point.  
+EDXAPP_RETRY_ACTIVATION_EMAIL_MAX_ATTEMPTS: 50
+# overriding the default value from 0.5 to 2. 
+EDXAPP_RETRY_ACTIVATION_EMAIL_TIMEOUT: 2
+EDXAPP_SESSION_INACTIVITY_TIMEOUT_IN_SECONDS: 1800
+EDXAPP_X_FRAME_OPTIONS: "SAMEORIGIN"
+EDXAPP_CSRF_COOKIE_SECURE: %%NGINX_ENABLE_SSL%%
+
+EDXAPP_LTI_USER_EMAIL_DOMAIN: "lti.openedx.microsoft.com"
+
+# Default log levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+#EDXAPP_LOG_LEVEL: 'INFO'
+
+#Cookies API url
+EDXAPP_API_COOKIE_URL: "%%EDXAPP_COOKIE_API_URL%%"
+
+# View live drop down for CMS
+EDXAPP_ENABLE_MULTI_SITE_VIEWLIVE_DROPDOWN: "%%EDXAPP_ENABLE_MULTI_SITE_VIEWLIVE_DROPDOWN%%"
