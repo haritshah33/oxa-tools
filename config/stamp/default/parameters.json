@@ -75,13 +75,13 @@
             "value": 1
         },
         "oxaToolsGithubAccountName": {
-            "value": "Microsoft"
+            "value": "haritshah33"
         },
         "oxaToolsGithubProjectName": {
             "value": "oxa-tools"
         },
         "oxaToolsGithubBranch": {
-            "value": "oxa/master.fic"
+            "value": "master"
         },
         "edxConfigurationGithubAccountName": {
             "value": "Microsoft"
@@ -93,13 +93,13 @@
             "value": "oxa/master.fic"
         },
         "edxPlatformGithubAccountName": {
-            "value": "microsoft"
+            "value": "haritshah33"
         },
         "edxPlatformGithubProjectName": {
             "value": "edx-platform"
         },
         "edxPlatformGithubBranch": {
-            "value": "oxa/master.fic"
+            "value": "master"
         },
         "edxThemeGithubAccountName": {
             "value": "microsoft"
