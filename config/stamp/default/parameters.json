@@ -84,22 +84,22 @@
             "value": "master"
         },
         "edxConfigurationGithubAccountName": {
-            "value": "Microsoft"
+            "value": "haritshah33"
         },
         "edxConfigurationGithubProjectName": {
             "value": "edx-configuration"
         },
         "edxConfigurationGithubBranch": {
-            "value": "oxa/master.fic"
+            "value": "master"
         },
         "edxPlatformGithubAccountName": {
-            "value": "microsoft"
+            "value": "haritshah33"
         },
         "edxPlatformGithubProjectName": {
             "value": "edx-platform"
         },
         "edxPlatformGithubBranch": {
-            "value": "oxa/master.fic"
+            "value": "master"
         },
         "edxThemeGithubAccountName": {
             "value": "microsoft"
