@@ -93,13 +93,13 @@
             "value": "oxa/master.fic"
         },
         "edxPlatformGithubAccountName": {
-            "value": "haritshah33"
+            "value": "microsoft"
         },
         "edxPlatformGithubProjectName": {
             "value": "edx-platform"
         },
         "edxPlatformGithubBranch": {
-            "value": "master"
+            "value": "oxa/master.fic"
         },
         "edxThemeGithubAccountName": {
             "value": "microsoft"
