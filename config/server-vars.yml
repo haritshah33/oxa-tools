@@ -52,14 +52,14 @@ EDXAPP_MKTG_URL_LINK_MAP:
 
 # Country made required field in registration.
 EDXAPP_REGISTRATION_EXTRA_FIELDS: 
-  city: "hidden"
+  city: "required"
   country: "required"
-  gender: "optional"
+  gender: "required"
   goals: "optional"
   honor_code: "required"
   level_of_education: "optional"
   mailing_address: "hidden"
-  year_of_birth: "hidden"
+  year_of_birth: "required"
   language: "optional"
 
 
@@ -133,4 +133,4 @@ EDXAPP_API_COOKIE_URL: "%%EDXAPP_COOKIE_API_URL%%"
 # View live drop down for CMS
 EDXAPP_ENABLE_MULTI_SITE_VIEWLIVE_DROPDOWN: "%%EDXAPP_ENABLE_MULTI_SITE_VIEWLIVE_DROPDOWN%%"
 
-REGISTRATION_EMAIL_PATTERNS_ALLOWED": [ "^.*@(.*\\.)?cloudthat\\.in$" ]
+
