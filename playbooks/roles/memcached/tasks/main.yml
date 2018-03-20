@@ -1,7 +1,0 @@
----
-
-- name: Install Alternate Memcached
-  apt: pkg=memcached state=present
-  tags:
-    - memcached
-  
