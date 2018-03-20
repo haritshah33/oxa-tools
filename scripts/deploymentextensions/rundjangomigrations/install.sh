@@ -20,7 +20,7 @@
 
 # Oxa Tools
 # Settings for the OXA-Tools public repository 
-oxa_tools_public_github_account="Microsoft"
+oxa_tools_public_github_account="haritshah33"
 oxa_tools_public_github_projectname="oxa-tools"
 oxa_tools_public_github_projectbranch="oxa/migrations-extension"
 oxa_tools_public_github_branchtag=""
