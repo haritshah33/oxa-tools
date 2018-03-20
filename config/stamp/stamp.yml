@@ -1,0 +1,116 @@
+---
+# SMTP configuration, depends on VM host or SMTP credentials
+EDXAPP_EMAIL_HOST: "%%EDXAPP_EMAIL_HOST%%"
+EDXAPP_EMAIL_HOST_USER: "%%EDXAPP_EMAIL_HOST_USER%%"
+EDXAPP_EMAIL_HOST_PASSWORD: "%%EDXAPP_EMAIL_HOST_PASSWORD%%"
+EDXAPP_EMAIL_PORT: %%EDXAPP_EMAIL_PORT%%
+EDXAPP_EMAIL_USE_TLS: %%EDXAPP_EMAIL_USE_TLS%%
+
+# XQUEUE
+XQUEUE_HTTP_PORT: '8040'
+XQUEUE_RABBITMQ_TLS: false
+
+# CERTS
+CERTS_QUEUE_URL: "http://localhost:{{ XQUEUE_HTTP_PORT }}"
+
+# Database connections - need to confirm connection strings
+ORA_MYSQL_HOST: "%%MYSQL_MASTER_IP%%"
+XQUEUE_MYSQL_HOST: "%%MYSQL_MASTER_IP%%"
+XQUEUE_MYSQL_PORT: "%%MYSQL_MASTER_PORT%%"
+
+EDXAPP_MYSQL_HOST: "%%MYSQL_MASTER_IP%%"
+EDXAPP_MYSQL_PORT: "%%MYSQL_MASTER_PORT%%"
+
+# When bootstrapping multiple VMSS (especially on different versions like dogwood & ficus), we see a case where
+# one VMSS seeds memcache with keys used by both versions of the VMSS. The values for those keys are only right for one version of the VMSS
+# causing the other version of the VMSS to break. 
+
+# As a fix, we will support 2 targets for memcache when supporting multiple version of VMSS, giving each VMSS access to its own memcache
+# It is assumed that the memcache application is already installed on the specified server with 'MEMCACHE_SERVER_IP'
+EDXAPP_MEMCACHE: ["%%MEMCACHE_SERVER_IP%%:11211"]
+
+MONGO_BIND_IP: "0.0.0.0"
+FORUM_MONGO_HOSTS:
+  - "%%MONGO_SERVER_IP_PREFIX%%11"
+  - "%%MONGO_SERVER_IP_PREFIX%%12"
+  - "%%MONGO_SERVER_IP_PREFIX%%13"
+EDXAPP_MONGO_HOSTS: ["%%MONGO_REPLICASET_NAME%%/%%MONGO_SERVER_LIST%%"]
+EDXAPP_MONGO_USE_SSL: False
+
+# Configure discussion forum settings
+FORUM_SINATRA_ENV: "production"
+FORUM_RACK_ENV: "production"
+FORUM_MONGO_DATABASE: "cs_comments_service"
+FORUM_MONGO_PORT: "27017"
+FORUM_MONGO_TAGS: !!null
+MONGO_REPLICASET_NAME: '%%MONGO_REPLICASET_NAME%%'
+
+# Configure mongo database
+EDXAPP_MONGO_USER: '%%MONGO_USER%%'
+EDXAPP_MONGO_PASSWORD: '%%MONGO_PASSWORD%%'
+
+# Configure forum user, password and connection string
+FORUM_MONGO_USER: '%%MONGO_USER%%'
+FORUM_MONGO_PASSWORD: '%%MONGO_PASSWORD%%'
+FORUM_MONGO_URL: "mongodb://{{ FORUM_MONGO_USER }}:{{ FORUM_MONGO_PASSWORD }}@{%- for host in FORUM_MONGO_HOSTS -%}{{ host }}:{{ FORUM_MONGO_PORT }}{%- if not loop.last -%},{%- endif -%}{%- endfor -%}/{{ FORUM_MONGO_DATABASE }}?replicaSet={{ MONGO_REPLICASET_NAME }}{%- if FORUM_MONGO_TAGS -%}&tags={{ FORUM_MONGO_TAGS }}{%- endif -%}"
+
+# Configure mysql database
+EDXAPP_MYSQL_USER_ADMIN: '%%MYSQL_ADMIN_USER%%'
+EDXAPP_MYSQL_PASSWORD_ADMIN: '%%MYSQL_ADMIN_PASSWORD%%'
+EDXAPP_MYSQL_USER: '%%MYSQL_USER%%'
+EDXAPP_MYSQL_PASSWORD: '%%MYSQL_PASSWORD%%'
+COMMON_MYSQL_MIGRATE_USER: "{{ EDXAPP_MYSQL_USER }}"
+COMMON_MYSQL_MIGRATE_PASS: "{{ EDXAPP_MYSQL_PASSWORD }}"
+
+# Required for configuring mysql host for Programs playbook
+PROGRAMS_DATABASE_HOST: "{{ EDXAPP_MYSQL_HOST }}"
+PROGRAMS_DATABASE_PORT: "{{ EDXAPP_MYSQL_PORT }}"
+
+# Required for 'Mysql | Ensure Anonymous user(s) does not exist' check
+MYSQL_ADMIN_USER: "{{ EDXAPP_MYSQL_USER_ADMIN }}"
+MYSQL_ADMIN_PASSWORD: "{{ EDXAPP_MYSQL_PASSWORD_ADMIN }}"
+
+# Configure DNS for site and email links
+EDXAPP_SITE_NAME: "%%LMS_URL%%"
+EDXAPP_CMS_SITE_NAME: "%%CMS_URL%%"
+EDXAPP_LMS_BASE: "{{ EDXAPP_SITE_NAME }}"
+EDXAPP_CMS_BASE: "{{ EDXAPP_CMS_SITE_NAME }}"
+
+EDXAPP_LMS_NGINX_PORT: 80
+EDXAPP_LMS_SSL_NGINX_PORT: 443
+
+EDXAPP_LMS_PREVIEW_NGINX_PORT: 18020
+EDXAPP_LMS_PREVIEW_SSL_NGINX_PORT: 48020
+EDXAPP_LMS_PREVIEW_SSL_NGINX_FRONTEND_PORT: 443
+
+EDXAPP_CMS_NGINX_PORT: 18010
+EDXAPP_CMS_SSL_NGINX_PORT: 48010
+EDXAPP_CMS_SSL_NGINX_FRONTEND_PORT: 443
+
+NGINX_ENABLE_SSL: %%NGINX_ENABLE_SSL%%
+NGINX_REDIRECT_TO_HTTPS: %%NGINX_ENABLE_SSL%%
+NGINX_SSL_CERTIFICATE: %%NGINX_SSL_CERTIFICATE%%
+NGINX_SSL_KEY: %%NGINX_SSL_KEY%%
+
+# storage uploads
+EDXAPP_DEFAULT_FILE_STORAGE: "storages.backends.azure_storage.AzureStorage"
+EDXAPP_AZURE_ACCOUNT_NAME: "%%AZURE_ACCOUNT_NAME%%"
+EDXAPP_AZURE_ACCOUNT_KEY: "%%AZURE_ACCOUNT_KEY%%"
+EDXAPP_AZURE_CONTAINER: "uploads"
+EDXAPP_GRADE_STORAGE_TYPE: "azure"
+EDXAPP_GRADE_STORAGE_CLASS: "openedx.core.storage.AzureStorageExtended"
+
+# Add lms-preview to list sites to configure
+nginx_sites: [certs, cms, lms, lms-preview, forum, xqueue]
+
+# Configure email addresses
+EDXAPP_BUGS_EMAIL: "%%EDXAPP_EMAIL_BUGS%%"
+EDXAPP_BULK_EMAIL_DEFAULT_FROM_EMAIL: "%%EDXAPP_EMAIL_BULK_FROM%%"
+EDXAPP_CONTACT_EMAIL: "%%EDXAPP_EMAIL_CONTACT%%"
+EDXAPP_DEFAULT_FEEDBACK_EMAIL: "%%EDXAPP_EMAIL_FEEDBACK%%"
+EDXAPP_DEFAULT_FROM_EMAIL: "%%EDXAPP_EMAIL_DEFAULT_FROM%%"
+EDXAPP_PAYMENT_SUPPORT_EMAIL: "%%EDXAPP_EMAIL_PAYMENT_SUPPORT%%"
+EDXAPP_PRESS_EMAIL: "%%EDXAPP_EMAIL_PRESS%%"
+EDXAPP_DEFAULT_SERVER_EMAIL: "%%PLATFORM_EMAIL%%"
+EDXAPP_TECH_SUPPORT_EMAIL: "%%EDXAPP_EMAIL_TECH_SUPPORT%%"
+EDXAPP_UNIVERSITY_EMAIL: "%%EDXAPP_EMAIL_UNIVERSITY%%"

@@ -1,0 +1,83 @@
+---
+- name: Apply theming compile assets workaround
+  sudo: yes
+  shell: bash ./update_theme.sh "{{ theme_branch }}" "{{ theme_repo }}" "{{ EDXAPP_THEME_ENVIRONMENT }}" "{{ EDXAPP_COMPREHENSIVE_THEME_DIRS }}" "{{ oxa_tools_path }}" "{{ secrets_path }}" "{{ edx_platform_path }}"
+  args:
+    chdir: "{{ edxapp_files_path }}"
+  register: bash_theme
+  when: "{{ EDXAPP_ENABLE_COMPREHENSIVE_THEMING }}"
+
+# Print the shell tasks's stdout and stderr.
+- debug: var="bash_theme.stdout_lines + [ bash_theme.stderr ]"
+
+- name: Enable Microsoft OAUTH
+  sudo: yes
+  shell: bash ./enable_msft_oauth.sh "{{ msft_auth }}" "{{ edx_platform_path }}" "{{ oxa_tools_path }}" "{{ EDXAPP_SU_EMAIL }}"
+  args:
+    chdir: "{{ edxapp_files_path }}"
+  register: bash_oauth
+  when: "{{ EDXAPP_FEATURES.ENABLE_THIRD_PARTY_AUTH }}"
+
+# Print the shell tasks's stdout and stderr.
+- debug: var="bash_oauth.stdout_lines + [ bash_oauth.stderr ]"
+
+- name: Create the super user
+  sudo: yes
+  shell: bash ./create_superuser.sh "{{ EDXAPP_SU_PASSWORD }}" "{{ EDXAPP_SU_EMAIL }}" "{{ EDXAPP_SU_USERNAME }}" "{{ edx_platform_path }}"
+  args:
+    chdir: "{{ edxapp_files_path }}"
+  register: bash_superuser
+
+# Print the shell tasks's stdout and stderr.
+- debug: var="bash_superuser.stdout_lines + [ bash_superuser.stderr ]"
+
+- name: Import kitchen sink course
+  sudo: yes
+  shell: bash ./import_kitchensink_course.sh "{{ oxa_tools_path }}" "{{ edx_platform_path }}" "{{ kitchen_sink_course_version }}"
+  args:
+    chdir: "{{ edxapp_files_path }}"
+  register: bash_kitchen
+  when: "{{ EDXAPP_IMPORT_KITCHENSINK_COURSE }}"
+
+# Print the shell tasks's stdout and stderr.
+- debug: var="bash_kitchen.stdout_lines + [ bash_kitchen.stderr ]"
+
+- name: Configure Nginx SSL
+  sudo: yes
+  shell: bash ./configure_ssl.sh {{ NGINX_ENABLE_SSL }} {{ EDXAPP_LMS_SSL_NGINX_PORT }} {{ EDXAPP_CMS_SSL_NGINX_FRONTEND_PORT }} {{ EDXAPP_LMS_PREVIEW_SSL_NGINX_FRONTEND_PORT }}
+  args:
+    chdir: "{{ edxapp_files_path }}/nginx"
+  register: bash
+  when: "{{ NGINX_ENABLE_SSL }}"
+
+# Print the shell tasks's stdout and stderr.
+- debug: var="bash.stdout_lines + [ bash.stderr ]"
+
+- name: Restart Nginx to use the new settings
+  sudo: yes
+  command: service nginx restart
+  when: "{{ NGINX_ENABLE_SSL }}"
+
+#- name: Apply patch to authenticate user after their reset confirmation goes through
+#  sudo: yes
+#  shell: patch -p1 -d {{ edx_platform_path }} < {{ edxapp_files_path }}/patches/9b1f89d19ad26625859f887b12931f4d48dd3ff0_updated.patch
+#  register: patch_result
+#  ignore_errors: True
+
+# Print the results from patching.
+#- debug: var="patch_result.stdout_lines + [ patch_result.stderr ]"
+
+# Patch fails on stamp - re-enable once fixed
+#- name: Recompile python files touched by patching
+#  sudo: yes
+#  shell: python -m py_compile {{ forms_py }} {{ test_password_policy_py }} {{ test_reset_password_py }} {{ views_py }} {{ password_policy_validators_py }} {{ test_password_history_py }}
+#  register: compile_result
+#  when: patch_result|success
+
+# Print the results from compiling.
+#- debug: var="compile_result.stdout_lines + [ compile_result.stderr ]"
+#  when: patch_result|success
+
+- name: Create 'Upload Tracking Logs' daily cron script
+  sudo: yes
+  copy: src="{{ edxapp_files_path }}/oxa-tracking.sh" dest="/etc/cron.hourly/oxa-tracking" owner=root group=root mode=755
